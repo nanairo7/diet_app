@@ -6,17 +6,21 @@ class SummaryCard extends StatelessWidget {
   final double totalCalories;
   final double totalProtein;
   final int entryCount;
+  final double? calorieGoal;
 
   const SummaryCard({
     super.key,
     required this.totalCalories,
     required this.totalProtein,
     required this.entryCount,
+    this.calorieGoal,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasGoal = calorieGoal != null && calorieGoal! > 0;
+    final isOver = hasGoal && totalCalories > calorieGoal!;
 
     return Card(
       margin: const EdgeInsets.all(16),
@@ -29,12 +33,13 @@ class SummaryCard extends StatelessWidget {
                 Expanded(
                   child: _MetricColumn(
                     icon: Icons.local_fire_department,
-                    iconColor: Colors.orange,
+                    iconColor: isOver ? Colors.red : Colors.orange,
                     label: AppStrings.totalCalories,
-                    value: '${totalCalories.toStringAsFixed(0)} ${AppStrings.kcalUnit}',
+                    value:
+                        '${totalCalories.toStringAsFixed(0)} ${AppStrings.kcalUnit}',
                     valueStyle: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.orange.shade700,
+                      color: isOver ? Colors.red.shade700 : Colors.orange.shade700,
                     ),
                   ),
                 ),
@@ -48,7 +53,8 @@ class SummaryCard extends StatelessWidget {
                     icon: Icons.fitness_center,
                     iconColor: Colors.blue,
                     label: AppStrings.totalProtein,
-                    value: '${totalProtein.toStringAsFixed(1)} ${AppStrings.gramUnit}',
+                    value:
+                        '${totalProtein.toStringAsFixed(1)} ${AppStrings.gramUnit}',
                     valueStyle: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.blue.shade700,
@@ -57,6 +63,13 @@ class SummaryCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (hasGoal) ...[
+              const SizedBox(height: 16),
+              _CalorieGoalBar(
+                totalCalories: totalCalories,
+                calorieGoal: calorieGoal!,
+              ),
+            ],
             const SizedBox(height: 12),
             Text(
               '${AppStrings.entryCount}: $entryCount ${AppStrings.entryUnit}',
@@ -67,6 +80,58 @@ class SummaryCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CalorieGoalBar extends StatelessWidget {
+  final double totalCalories;
+  final double calorieGoal;
+
+  const _CalorieGoalBar({
+    required this.totalCalories,
+    required this.calorieGoal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ratio = (totalCalories / calorieGoal).clamp(0.0, 1.5);
+    final isOver = totalCalories > calorieGoal;
+    final diff = (totalCalories - calorieGoal).abs();
+    final barColor = isOver ? Colors.red : Colors.green;
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${AppStrings.calorieGoal}: ${calorieGoal.toStringAsFixed(0)} ${AppStrings.kcalUnit}',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              isOver
+                  ? '${AppStrings.overCalorie}: +${diff.toStringAsFixed(0)} ${AppStrings.kcalUnit}'
+                  : '${AppStrings.remainingCalorie}: ${diff.toStringAsFixed(0)} ${AppStrings.kcalUnit}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isOver ? Colors.red.shade700 : Colors.green.shade700,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: ratio > 1.0 ? 1.0 : ratio,
+            minHeight: 10,
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            valueColor: AlwaysStoppedAnimation<Color>(barColor),
+          ),
+        ),
+      ],
     );
   }
 }

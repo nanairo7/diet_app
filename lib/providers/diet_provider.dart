@@ -15,12 +15,16 @@ class DietProvider extends ChangeNotifier {
   );
   List<String> _allDates = [];
   bool _isLoading = true;
+  double? _targetWeight;
 
   DietProvider(this._storage);
 
   DailyRecord get todayRecord => _todayRecord;
   List<String> get allDates => _allDates;
   bool get isLoading => _isLoading;
+  double? get targetWeight => _targetWeight;
+  double? get calorieGoal =>
+      _targetWeight != null ? _targetWeight! * 34 : null;
 
   static String _todayKey() {
     final now = DateTime.now();
@@ -30,11 +34,18 @@ class DietProvider extends ChangeNotifier {
   Future<void> init() async {
     await _storage.init();
     _allDates = _storage.getAllRecordDates();
+    _targetWeight = _storage.loadTargetWeight();
     final today = _storage.loadDailyRecord(_todayKey());
     if (today != null) {
       _todayRecord = today;
     }
     _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> setTargetWeight(double weight) async {
+    _targetWeight = weight;
+    await _storage.saveTargetWeight(weight);
     notifyListeners();
   }
 

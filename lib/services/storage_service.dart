@@ -7,6 +7,7 @@ import '../models/daily_record.dart';
 class StorageService {
   static const String _prefix = 'diet_';
   static const String _dateListKey = 'diet_date_list';
+  static const String _targetWeightKey = 'diet_target_weight';
 
   late SharedPreferences _prefs;
 
@@ -36,5 +37,13 @@ class StorageService {
 
   List<String> getAllRecordDates() {
     return _prefs.getStringList(_dateListKey) ?? [];
+  }
+
+  Future<void> saveTargetWeight(double weight) async {
+    await _prefs.setDouble(_targetWeightKey, weight);
+  }
+
+  double? loadTargetWeight() {
+    return _prefs.getDouble(_targetWeightKey);
   }
 }

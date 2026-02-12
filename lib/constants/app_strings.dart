@@ -23,4 +23,12 @@ class AppStrings {
   static const String invalidNumber = '有効な数値を入力してください';
   static const String cancel = 'キャンセル';
   static const String delete = '削除';
+  static const String settings = '設定';
+  static const String targetWeight = '目標体重 (kg)';
+  static const String calorieGoal = '摂取基準';
+  static const String save = '保存する';
+  static const String saved = '保存しました';
+  static const String overCalorie = '超過';
+  static const String remainingCalorie = '残り';
+  static const String notSet = '未設定';
 }

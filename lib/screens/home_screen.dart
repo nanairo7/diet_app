@@ -7,6 +7,7 @@ import '../widgets/food_entry_tile.dart';
 import '../widgets/summary_card.dart';
 import 'add_entry_screen.dart';
 import 'history_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           _currentIndex == 0 ? AppStrings.todayRecord : AppStrings.history,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: AppStrings.settings,
+            onPressed: () => _openSettings(context),
+          ),
+        ],
       ),
       body: _currentIndex == 0 ? _buildTodayView() : const HistoryScreen(),
       floatingActionButton: _currentIndex == 0
@@ -70,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   totalCalories: record.totalCalories,
                   totalProtein: record.totalProtein,
                   entryCount: record.entryCount,
+                  calorieGoal: provider.calorieGoal,
                 ),
                 Expanded(
                   child: record.entries.isEmpty
@@ -109,6 +118,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AddEntryScreen()),
+    );
+  }
+
+  void _openSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingsScreen()),
     );
   }
 }
