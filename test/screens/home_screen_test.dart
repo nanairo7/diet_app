@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,11 @@ Future<Widget> _buildTestWidget() async {
 }
 
 void main() {
+  setUpAll(() async {
+    // TableCalendarがja_JPロケールを使用するため初期化が必要
+    await initializeDateFormatting('ja');
+  });
+
   group('HomeScreen - 表示', () {
     testWidgets('今日タブが表示される', (tester) async {
       await tester.pumpWidget(await _buildTestWidget());
@@ -67,6 +73,11 @@ void main() {
 
   group('HomeScreen - ナビゲーション', () {
     testWidgets('履歴タブに切り替えるとFABが消える', (tester) async {
+      // TableCalendarを含む履歴画面のオーバーフローを防ぐため画面サイズを設定
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(await _buildTestWidget());
       await tester.pump();
 
@@ -77,6 +88,10 @@ void main() {
     });
 
     testWidgets('履歴タブに切り替えるとタイトルが変わる', (tester) async {
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(await _buildTestWidget());
       await tester.pump();
 

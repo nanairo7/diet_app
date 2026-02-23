@@ -31,4 +31,7 @@ class AppStrings {
   static const String overCalorie = '超過';
   static const String remainingCalorie = '残り';
   static const String notSet = '未設定';
+  static const String noRecordForDay = 'この日の記録はありません';
+  static const String calendarView = 'カレンダー';
+  static const String listView = 'リスト';
 }
