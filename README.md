@@ -95,7 +95,7 @@ flutter test --reporter expanded
 ### 期待されるテスト結果
 
 ```
-00:04 +99: All tests passed!
+00:04 +102: All tests passed!
 ```
 
 ---
@@ -111,10 +111,10 @@ flutter test --reporter expanded
 | `test/screens/home_screen_test.dart` | 10 | ホーム画面の表示・タブ切り替え・画面遷移 |
 | `test/screens/add_entry_screen_test.dart` | 9 | 食事追加フォームのバリデーション・送信 |
 | `test/screens/settings_screen_test.dart` | 10 | 設定画面の表示・カロリープレビュー・保存 |
-| `test/screens/history_screen_test.dart` | 4 | 履歴画面の空状態・記録あり状態 |
+| `test/screens/history_screen_test.dart` | 7 | 履歴画面のカレンダー表示・日付選択 |
 | `test/screens/day_detail_screen_test.dart` | 6 | 日別詳細画面の表示・集計値 |
 | `test/widget_test.dart` | 1 | アプリ全体のビルド確認 |
-| **合計** | **99** | |
+| **合計** | **102** | |
 
 ---
 
@@ -170,3 +170,4 @@ test/
 | [shared_preferences](https://pub.dev/packages/shared_preferences) | ^2.3.4 | ローカルデータ永続化 |
 | [intl](https://pub.dev/packages/intl) | ^0.19.0 | 日本語日付フォーマット |
 | [uuid](https://pub.dev/packages/uuid) | ^4.5.1 | 食事エントリのID生成 |
+| [table_calendar](https://pub.dev/packages/table_calendar) | ^3.1.0 | 履歴画面のカレンダー表示 |
