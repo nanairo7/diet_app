@@ -8,6 +8,7 @@ class StorageService {
   static const String _prefix = 'diet_';
   static const String _dateListKey = 'diet_date_list';
   static const String _targetWeightKey = 'diet_target_weight';
+  static const String _firstLaunchKey = 'diet_first_launch_done';
 
   late SharedPreferences _prefs;
 
@@ -45,5 +46,13 @@ class StorageService {
 
   double? loadTargetWeight() {
     return _prefs.getDouble(_targetWeightKey);
+  }
+
+  bool isFirstLaunch() {
+    return !(_prefs.getBool(_firstLaunchKey) ?? false);
+  }
+
+  Future<void> setFirstLaunchDone() async {
+    await _prefs.setBool(_firstLaunchKey, true);
   }
 }

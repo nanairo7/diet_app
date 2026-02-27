@@ -16,7 +16,7 @@ void main() {
     await tester.pumpWidget(
       ChangeNotifierProvider<DietProvider>.value(
         value: provider,
-        child: const DietApp(),
+        child: const DietApp(isFirstLaunch: false),
       ),
     );
     await tester.pump();

@@ -77,4 +77,8 @@ class DietProvider extends ChangeNotifier {
     if (dateKey == _todayKey()) return _todayRecord;
     return _storage.loadDailyRecord(dateKey);
   }
+
+  Future<void> completeOnboarding() async {
+    await _storage.setFirstLaunchDone();
+  }
 }

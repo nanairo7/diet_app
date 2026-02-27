@@ -4,12 +4,17 @@
 
 ```mermaid
 flowchart TD
+    Launch{{"🚀 アプリ起動"}}
+    Onboarding["👋 OnboardingScreen\n（初回起動ガイド）"]
     Home["🏠 HomeScreen\n（今日の記録タブ）"]
     History["📅 HistoryScreen\n（履歴タブ）"]
     Add["➕ AddEntryScreen\n（食事追加）"]
     Settings["⚙️ SettingsScreen\n（設定）"]
     Detail["📋 DayDetailScreen\n（日別詳細）"]
 
+    Launch -->|"初回起動"| Onboarding
+    Launch -->|"2回目以降"| Home
+    Onboarding -->|"はじめる / スキップ"| Home
     Home -->|"FABタップ"| Add
     Home -->|"履歴タブタップ"| History
     Home -->|"設定アイコンタップ"| Settings
@@ -20,6 +25,14 @@ flowchart TD
 ```
 
 ## 画面一覧
+
+### OnboardingScreen (`lib/screens/onboarding_screen.dart`)
+
+- **役割**: 初回起動時のみ表示するウェルカム画面
+- **内容**: アプリ説明 + 主要機能紹介 + 目標体重の初期設定フォーム
+- **「はじめる」**: 目標体重を保存して HomeScreen へ遷移（初回起動フラグを記録）
+- **「スキップ」**: 目標体重を設定せず HomeScreen へ遷移（初回起動フラグを記録）
+- **判定**: `StorageService.isFirstLaunch()` が `true` の場合のみ表示
 
 ### HomeScreen (`lib/screens/home_screen.dart`)
 
