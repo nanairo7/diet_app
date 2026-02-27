@@ -8,6 +8,10 @@ class StorageService {
   static const String _prefix = 'diet_';
   static const String _dateListKey = 'diet_date_list';
   static const String _targetWeightKey = 'diet_target_weight';
+  static const String _firstLaunchKey = 'diet_first_launch_done';
+  static const String _notificationEnabledKey = 'diet_notification_enabled';
+  static const String _notificationHourKey = 'diet_notification_hour';
+  static const String _notificationMinuteKey = 'diet_notification_minute';
 
   late SharedPreferences _prefs;
 
@@ -45,5 +49,35 @@ class StorageService {
 
   double? loadTargetWeight() {
     return _prefs.getDouble(_targetWeightKey);
+  }
+
+  bool isFirstLaunch() {
+    return !(_prefs.getBool(_firstLaunchKey) ?? false);
+  }
+
+  Future<void> setFirstLaunchDone() async {
+    await _prefs.setBool(_firstLaunchKey, true);
+  }
+
+  bool loadNotificationEnabled() {
+    return _prefs.getBool(_notificationEnabledKey) ?? false;
+  }
+
+  int loadNotificationHour() {
+    return _prefs.getInt(_notificationHourKey) ?? 20;
+  }
+
+  int loadNotificationMinute() {
+    return _prefs.getInt(_notificationMinuteKey) ?? 0;
+  }
+
+  Future<void> saveNotificationSettings({
+    required bool enabled,
+    required int hour,
+    required int minute,
+  }) async {
+    await _prefs.setBool(_notificationEnabledKey, enabled);
+    await _prefs.setInt(_notificationHourKey, hour);
+    await _prefs.setInt(_notificationMinuteKey, minute);
   }
 }

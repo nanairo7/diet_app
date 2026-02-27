@@ -16,6 +16,9 @@ class DietProvider extends ChangeNotifier {
   List<String> _allDates = [];
   bool _isLoading = true;
   double? _targetWeight;
+  bool _notificationEnabled = false;
+  int _notificationHour = 20;
+  int _notificationMinute = 0;
 
   DietProvider(this._storage);
 
@@ -25,6 +28,9 @@ class DietProvider extends ChangeNotifier {
   double? get targetWeight => _targetWeight;
   double? get calorieGoal =>
       _targetWeight != null ? _targetWeight! * 34 : null;
+  bool get notificationEnabled => _notificationEnabled;
+  int get notificationHour => _notificationHour;
+  int get notificationMinute => _notificationMinute;
 
   static String _todayKey() {
     final now = DateTime.now();
@@ -35,6 +41,9 @@ class DietProvider extends ChangeNotifier {
     await _storage.init();
     _allDates = _storage.getAllRecordDates();
     _targetWeight = _storage.loadTargetWeight();
+    _notificationEnabled = _storage.loadNotificationEnabled();
+    _notificationHour = _storage.loadNotificationHour();
+    _notificationMinute = _storage.loadNotificationMinute();
     final today = _storage.loadDailyRecord(_todayKey());
     if (today != null) {
       _todayRecord = today;
@@ -76,5 +85,25 @@ class DietProvider extends ChangeNotifier {
   DailyRecord? getRecordForDate(String dateKey) {
     if (dateKey == _todayKey()) return _todayRecord;
     return _storage.loadDailyRecord(dateKey);
+  }
+
+  Future<void> completeOnboarding() async {
+    await _storage.setFirstLaunchDone();
+  }
+
+  Future<void> saveNotificationSettings({
+    required bool enabled,
+    required int hour,
+    required int minute,
+  }) async {
+    _notificationEnabled = enabled;
+    _notificationHour = hour;
+    _notificationMinute = minute;
+    await _storage.saveNotificationSettings(
+      enabled: enabled,
+      hour: hour,
+      minute: minute,
+    );
+    notifyListeners();
   }
 }
