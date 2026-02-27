@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/app_strings.dart';
 import '../providers/diet_provider.dart';
+import '../services/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -14,7 +15,10 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _weightController = TextEditingController();
+  final _notificationService = NotificationService();
   double? _previewGoal;
+  bool _notificationEnabled = false;
+  TimeOfDay _notificationTime = const TimeOfDay(hour: 20, minute: 0);
 
   @override
   void initState() {
@@ -25,6 +29,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _previewGoal = provider.calorieGoal;
     }
     _weightController.addListener(_updatePreview);
+    _loadNotificationSettings(provider);
+  }
+
+  void _loadNotificationSettings(DietProvider provider) {
+    setState(() {
+      _notificationEnabled = provider.notificationEnabled;
+      _notificationTime =
+          TimeOfDay(hour: provider.notificationHour, minute: provider.notificationMinute);
+    });
   }
 
   @override
@@ -39,6 +52,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _previewGoal = value != null && value > 0 ? value * 34 : null;
     });
+  }
+
+  Future<void> _toggleNotification(bool enabled) async {
+    if (enabled) {
+      await _notificationService.init();
+      final granted = await _notificationService.requestPermission();
+      if (!mounted) return;
+      if (!granted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.notificationPermissionDenied),
+          ),
+        );
+        return;
+      }
+      await _notificationService.scheduleDaily(
+        hour: _notificationTime.hour,
+        minute: _notificationTime.minute,
+      );
+    } else {
+      await _notificationService.cancel();
+    }
+    if (!mounted) return;
+    await context.read<DietProvider>().saveNotificationSettings(
+          enabled: enabled,
+          hour: _notificationTime.hour,
+          minute: _notificationTime.minute,
+        );
+    setState(() => _notificationEnabled = enabled);
+  }
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _notificationTime,
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _notificationTime = picked);
+    if (_notificationEnabled) {
+      await _notificationService.scheduleDaily(
+        hour: picked.hour,
+        minute: picked.minute,
+      );
+      await context.read<DietProvider>().saveNotificationSettings(
+            enabled: true,
+            hour: picked.hour,
+            minute: picked.minute,
+          );
+    }
   }
 
   @override
@@ -117,6 +179,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     label: const Text(AppStrings.save),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    AppStrings.notificationSection,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Card(
+                    child: Column(
+                      children: [
+                        SwitchListTile(
+                          secondary: const Icon(Icons.notifications),
+                          title: const Text(AppStrings.notificationEnabled),
+                          value: _notificationEnabled,
+                          onChanged: _toggleNotification,
+                        ),
+                        if (_notificationEnabled) ...[
+                          const Divider(height: 1),
+                          ListTile(
+                            leading: const Icon(Icons.access_time),
+                            title: const Text(AppStrings.notificationTime),
+                            trailing: Text(
+                              _notificationTime.format(context),
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onTap: _pickTime,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],
