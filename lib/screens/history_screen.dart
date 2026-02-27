@@ -179,7 +179,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       return Center(
         child: Text(
           AppStrings.noRecordForDay,
-          style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }
@@ -198,10 +201,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final dates = provider.allDates;
 
     if (dates.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           AppStrings.noRecords,
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }

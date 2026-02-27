@@ -82,13 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Expanded(
                   child: record.entries.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Text(
                             AppStrings.noEntries,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         )
