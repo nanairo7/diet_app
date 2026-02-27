@@ -34,4 +34,14 @@ class AppStrings {
   static const String noRecordForDay = 'この日の記録はありません';
   static const String calendarView = 'カレンダー';
   static const String listView = 'リスト';
+
+  // Onboarding
+  static const String onboardingTitle = 'カロリー記録へようこそ';
+  static const String onboardingSubtitle = '毎日の食事を記録して\n理想の体型を目指しましょう';
+  static const String onboardingFeature1 = '食事をカロリーとタンパク質で記録';
+  static const String onboardingFeature2 = '目標体重から摂取基準カロリーを自動計算';
+  static const String onboardingFeature3 = 'カレンダーで過去の履歴を確認';
+  static const String onboardingWeightLabel = '目標体重を設定してください';
+  static const String onboardingSkip = 'スキップ';
+  static const String onboardingStart = 'はじめる';
 }

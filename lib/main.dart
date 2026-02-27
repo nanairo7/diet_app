@@ -6,6 +6,7 @@ import 'constants/app_strings.dart';
 import 'constants/app_theme.dart';
 import 'providers/diet_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
 import 'services/storage_service.dart';
 
 void main() async {
@@ -13,24 +14,28 @@ void main() async {
   await initializeDateFormatting('ja');
 
   final storage = StorageService();
+  await storage.init();
+  final isFirstLaunch = storage.isFirstLaunch();
 
   runApp(
     ChangeNotifierProvider(
       create: (_) => DietProvider(storage)..init(),
-      child: const DietApp(),
+      child: DietApp(isFirstLaunch: isFirstLaunch),
     ),
   );
 }
 
 class DietApp extends StatelessWidget {
-  const DietApp({super.key});
+  const DietApp({super.key, required this.isFirstLaunch});
+
+  final bool isFirstLaunch;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: AppStrings.appTitle,
       theme: AppTheme.lightTheme,
-      home: const HomeScreen(),
+      home: isFirstLaunch ? const OnboardingScreen() : const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
