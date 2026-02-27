@@ -1,5 +1,5 @@
 name: diet_app
-description: "Daily calorie and protein intake tracker"
+description: "毎日の食事（カロリー・タンパク質）を記録するiOSアプリ"
 publish_to: 'none'
 version: 1.0.0+1
 
