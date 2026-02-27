@@ -103,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               fontWeight: FontWeight.bold,
                               color: _previewGoal != null
                                   ? Colors.orange.shade700
-                                  : Colors.grey,
+                                  : theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],

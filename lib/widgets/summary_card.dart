@@ -51,13 +51,13 @@ class SummaryCard extends StatelessWidget {
                 Expanded(
                   child: _MetricColumn(
                     icon: Icons.fitness_center,
-                    iconColor: Colors.blue,
+                    iconColor: theme.colorScheme.tertiary,
                     label: AppStrings.totalProtein,
                     value:
                         '${totalProtein.toStringAsFixed(1)} ${AppStrings.gramUnit}',
                     valueStyle: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade700,
+                      color: theme.colorScheme.tertiary,
                     ),
                   ),
                 ),

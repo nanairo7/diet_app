@@ -35,6 +35,8 @@ class DietApp extends StatelessWidget {
     return MaterialApp(
       title: AppStrings.appTitle,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: isFirstLaunch ? const OnboardingScreen() : const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
