@@ -21,7 +21,7 @@
 |---|---|
 | Flutter | 3.24.4 (stable) |
 | Dart | 3.5.4 |
-| 対応プラットフォーム | Android / iOS / Web |
+| 対応プラットフォーム | iOS 16.0+ / Android / Web |
 
 ---
 
@@ -43,6 +43,18 @@ flutter pub get
 ---
 
 ## 実行
+
+### アプリの起動（iOSシミュレーター）
+
+```cmd
+flutter run -d iphonesimulator
+```
+
+### アプリの起動（実機 iOS）
+
+```cmd
+flutter run -d <device_id>
+```
 
 ### アプリの起動（Webブラウザ）
 
