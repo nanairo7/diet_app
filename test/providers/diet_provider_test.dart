@@ -144,6 +144,59 @@ void main() {
     });
   });
 
+  group('DietProvider - お気に入り', () {
+    test('初期状態ではお気に入りが空', () {
+      expect(provider.favorites, isEmpty);
+    });
+
+    test('お気に入りを追加できる', () async {
+      await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);
+      expect(provider.favorites.length, 1);
+      expect(provider.favorites.first.name, '鶏むね肉');
+      expect(provider.favorites.first.calories, 150);
+      expect(provider.favorites.first.protein, 30);
+    });
+
+    test('複数のお気に入りを追加できる', () async {
+      await provider.addFavorite(name: '食品A', calories: 100, protein: 10);
+      await provider.addFavorite(name: '食品B', calories: 200, protein: 20);
+      expect(provider.favorites.length, 2);
+    });
+
+    test('お気に入りをIDで削除できる', () async {
+      await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);
+      final id = provider.favorites.first.id;
+      await provider.removeFavorite(id);
+      expect(provider.favorites, isEmpty);
+    });
+
+    test('複数のうち特定のお気に入りだけ削除できる', () async {
+      await provider.addFavorite(name: '食品A', calories: 100, protein: 10);
+      await provider.addFavorite(name: '食品B', calories: 200, protein: 20);
+      final idToDelete = provider.favorites.first.id;
+      await provider.removeFavorite(idToDelete);
+      expect(provider.favorites.length, 1);
+      expect(provider.favorites.first.name, '食品B');
+    });
+
+    test('お気に入り追加後にnotifyListenersが呼ばれる', () async {
+      int notifyCount = 0;
+      provider.addListener(() => notifyCount++);
+      await provider.addFavorite(name: 'テスト', calories: 100, protein: 10);
+      expect(notifyCount, greaterThan(0));
+    });
+
+    test('お気に入りがinit後に復元される', () async {
+      await provider.addFavorite(name: 'ご飯', calories: 250, protein: 4);
+
+      final provider2 = DietProvider(storage);
+      await provider2.init();
+
+      expect(provider2.favorites.length, 1);
+      expect(provider2.favorites.first.name, 'ご飯');
+    });
+  });
+
   group('DietProvider - 永続化', () {
     test('init後に保存済みの目標体重が復元される', () async {
       await provider.setTargetWeight(75.0);

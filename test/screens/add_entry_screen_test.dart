@@ -149,4 +149,47 @@ void main() {
       expect(find.text(AppStrings.added), findsOneWidget);
     });
   });
+
+  group('AddEntryScreen - お気に入りスイッチ', () {
+    testWidgets('お気に入りに登録スイッチが表示される', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      expect(find.text(AppStrings.addToFavorites), findsOneWidget);
+      expect(find.byType(SwitchListTile), findsOneWidget);
+    });
+
+    testWidgets('スイッチのデフォルトはOFF', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      final switchWidget =
+          tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+      expect(switchWidget.value, isFalse);
+    });
+
+    testWidgets('スイッチをタップするとONになる', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pump();
+      final switchWidget =
+          tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+      expect(switchWidget.value, isTrue);
+    });
+
+    testWidgets('スイッチONで送信するとお気に入り登録済みスナックバーが表示される',
+        (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+
+      await tester.enterText(
+          find.widgetWithText(TextFormField, AppStrings.foodName), '鶏むね肉');
+      await tester.enterText(
+          find.widgetWithText(TextFormField, AppStrings.calories), '150');
+      await tester.enterText(
+          find.widgetWithText(TextFormField, AppStrings.protein), '30');
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pump();
+      await tester.tap(find.text(AppStrings.addButton));
+      await tester.pump();
+
+      expect(find.text('${AppStrings.added}・${AppStrings.favoriteAdded}'),
+          findsOneWidget);
+    });
+  });
 }
