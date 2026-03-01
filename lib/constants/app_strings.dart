@@ -11,7 +11,10 @@ class AppStrings {
   static const String totalProtein = '合計タンパク質';
   static const String entryCount = '記録数';
   static const String noRecords = '記録がありません';
-  static const String noEntries = 'まだ記録がありません\n「＋」ボタンから食事を追加しましょう';
+  static const String noEntries = 'まだ記録がありません\n下のフォームから食事を追加しましょう';
+  static const String todayCalories = '今日のカロリー';
+  static const String addCalorieButton = '+ カロリーを追加';
+  static const String addFromFavoritesButton = '+ お気に入りから追加';
   static const String deleteConfirm = 'この記録を削除しますか？';
   static const String today = '今日';
   static const String kcalUnit = 'kcal';

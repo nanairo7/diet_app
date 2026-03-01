@@ -21,6 +21,6 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('今日の記録'), findsOneWidget);
+    expect(find.text('今日のカロリー'), findsOneWidget);
   });
 }
