@@ -16,6 +16,7 @@ class _AddEntryScreenState extends State<AddEntryScreen> {
   final _nameController = TextEditingController();
   final _caloriesController = TextEditingController();
   final _proteinController = TextEditingController();
+  bool _addToFavorites = false;
 
   @override
   void dispose() {
@@ -98,7 +99,15 @@ class _AddEntryScreenState extends State<AddEntryScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 8),
+                  SwitchListTile(
+                    value: _addToFavorites,
+                    onChanged: (value) => setState(() => _addToFavorites = value),
+                    title: const Text(AppStrings.addToFavorites),
+                    secondary: const Icon(Icons.star_outline),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  const SizedBox(height: 16),
                   FilledButton.icon(
                     onPressed: _submit,
                     icon: const Icon(Icons.add),
@@ -116,21 +125,37 @@ class _AddEntryScreenState extends State<AddEntryScreen> {
     );
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final name = _nameController.text.trim();
     final calories = double.parse(_caloriesController.text.trim());
     final protein = double.parse(_proteinController.text.trim());
+    final provider = context.read<DietProvider>();
 
-    context.read<DietProvider>().addEntry(
-          name: name,
-          calories: calories,
-          protein: protein,
-        );
+    await provider.addEntry(
+      name: name,
+      calories: calories,
+      protein: protein,
+    );
 
+    if (_addToFavorites) {
+      await provider.addFavorite(
+        name: name,
+        calories: calories,
+        protein: protein,
+      );
+    }
+
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(AppStrings.added)),
+      SnackBar(
+        content: Text(
+          _addToFavorites
+              ? '${AppStrings.added}・${AppStrings.favoriteAdded}'
+              : AppStrings.added,
+        ),
+      ),
     );
 
     Navigator.pop(context);

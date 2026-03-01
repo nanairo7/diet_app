@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/daily_record.dart';
+import '../models/favorite_entry.dart';
 
 class StorageService {
   static const String _prefix = 'diet_';
@@ -12,6 +13,7 @@ class StorageService {
   static const String _notificationEnabledKey = 'diet_notification_enabled';
   static const String _notificationHourKey = 'diet_notification_hour';
   static const String _notificationMinuteKey = 'diet_notification_minute';
+  static const String _favoritesKey = 'diet_favorites';
 
   late SharedPreferences _prefs;
 
@@ -79,5 +81,17 @@ class StorageService {
     await _prefs.setBool(_notificationEnabledKey, enabled);
     await _prefs.setInt(_notificationHourKey, hour);
     await _prefs.setInt(_notificationMinuteKey, minute);
+  }
+
+  Future<void> saveFavorites(List<FavoriteEntry> favorites) async {
+    final jsonList = favorites.map((e) => jsonEncode(e.toJson())).toList();
+    await _prefs.setStringList(_favoritesKey, jsonList);
+  }
+
+  List<FavoriteEntry> loadFavorites() {
+    final jsonList = _prefs.getStringList(_favoritesKey) ?? [];
+    return jsonList
+        .map((s) => FavoriteEntry.fromJson(jsonDecode(s) as Map<String, dynamic>))
+        .toList();
   }
 }

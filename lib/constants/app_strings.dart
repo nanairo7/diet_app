@@ -42,6 +42,14 @@ class AppStrings {
   static const String notificationPermissionDenied =
       '通知の許可が必要です。設定アプリから通知を有効にしてください。';
 
+  // Favorites
+  static const String favorites = 'お気に入り';
+  static const String addToFavorites = 'お気に入りに登録';
+  static const String favoritesEmpty = 'お気に入りはまだありません';
+  static const String addFromFavorites = 'お気に入りから追加';
+  static const String favoriteAdded = 'お気に入りに登録しました';
+  static const String favoriteDeleted = 'お気に入りから削除しました';
+
   // Onboarding
   static const String onboardingTitle = 'カロリー記録へようこそ';
   static const String onboardingSubtitle = '毎日の食事を記録して\n理想の体型を目指しましょう';

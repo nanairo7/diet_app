@@ -6,6 +6,7 @@ import '../providers/diet_provider.dart';
 import '../widgets/food_entry_tile.dart';
 import '../widgets/summary_card.dart';
 import 'add_entry_screen.dart';
+import 'favorites_screen.dart';
 import 'history_screen.dart';
 import 'settings_screen.dart';
 
@@ -27,6 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
           _currentIndex == 0 ? AppStrings.todayRecord : AppStrings.history,
         ),
         actions: [
+          if (_currentIndex == 0)
+            IconButton(
+              icon: const Icon(Icons.star_outline),
+              tooltip: AppStrings.favorites,
+              onPressed: () => _openFavorites(context),
+            ),
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: AppStrings.settings,
@@ -120,6 +127,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AddEntryScreen()),
+    );
+  }
+
+  void _openFavorites(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const FavoritesScreen()),
     );
   }
 

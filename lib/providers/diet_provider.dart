@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/daily_record.dart';
+import '../models/favorite_entry.dart';
 import '../models/food_entry.dart';
 import '../services/storage_service.dart';
 
@@ -19,6 +20,7 @@ class DietProvider extends ChangeNotifier {
   bool _notificationEnabled = false;
   int _notificationHour = 20;
   int _notificationMinute = 0;
+  List<FavoriteEntry> _favorites = [];
 
   DietProvider(this._storage);
 
@@ -31,6 +33,7 @@ class DietProvider extends ChangeNotifier {
   bool get notificationEnabled => _notificationEnabled;
   int get notificationHour => _notificationHour;
   int get notificationMinute => _notificationMinute;
+  List<FavoriteEntry> get favorites => List.unmodifiable(_favorites);
 
   static String _todayKey() {
     final now = DateTime.now();
@@ -44,6 +47,7 @@ class DietProvider extends ChangeNotifier {
     _notificationEnabled = _storage.loadNotificationEnabled();
     _notificationHour = _storage.loadNotificationHour();
     _notificationMinute = _storage.loadNotificationMinute();
+    _favorites = _storage.loadFavorites();
     final today = _storage.loadDailyRecord(_todayKey());
     if (today != null) {
       _todayRecord = today;
@@ -85,6 +89,27 @@ class DietProvider extends ChangeNotifier {
   DailyRecord? getRecordForDate(String dateKey) {
     if (dateKey == _todayKey()) return _todayRecord;
     return _storage.loadDailyRecord(dateKey);
+  }
+
+  Future<void> addFavorite({
+    required String name,
+    required double calories,
+    required double protein,
+  }) async {
+    final entry = FavoriteEntry.create(
+      name: name,
+      calories: calories,
+      protein: protein,
+    );
+    _favorites = [..._favorites, entry];
+    await _storage.saveFavorites(_favorites);
+    notifyListeners();
+  }
+
+  Future<void> removeFavorite(String id) async {
+    _favorites = _favorites.where((e) => e.id != id).toList();
+    await _storage.saveFavorites(_favorites);
+    notifyListeners();
   }
 
   Future<void> completeOnboarding() async {
