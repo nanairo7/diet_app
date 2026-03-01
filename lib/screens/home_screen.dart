@@ -239,16 +239,7 @@ class _InlineEntryFormState extends State<_InlineEntryForm> {
               ],
             ),
             const SizedBox(height: 8),
-            // お気に入りから追加ボタン（追加ボタンの上に配置してスナックバーで隠れないようにする）
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: widget.onOpenFavorites,
-                child: const Text(AppStrings.addFromFavoritesButton),
-              ),
-            ),
-            const SizedBox(height: 6),
-            // 追加ボタン + お気に入りアイコン（最下部：スナックバーが出ても直前に押したボタンが隠れるだけ）
+            // 追加ボタン + お気に入りアイコン
             Row(
               children: [
                 Expanded(
@@ -268,6 +259,15 @@ class _InlineEntryFormState extends State<_InlineEntryForm> {
                   tooltip: AppStrings.addToFavorites,
                 ),
               ],
+            ),
+            const SizedBox(height: 6),
+            // お気に入りから追加ボタン
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: widget.onOpenFavorites,
+                child: const Text(AppStrings.addFromFavoritesButton),
+              ),
             ),
           ],
         ),
