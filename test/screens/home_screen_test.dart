@@ -131,7 +131,7 @@ void main() {
       expect(find.byIcon(Icons.star_outline), findsOneWidget);
     });
 
-    testWidgets('正しいデータを入力して追加するとスナックバーが表示される', (tester) async {
+    testWidgets('正しいデータを入力して追加するとフォームがクリアされる', (tester) async {
       _setLargeScreen(tester);
       await tester.pumpWidget(await _buildTestWidget());
       await tester.pump();
@@ -145,7 +145,10 @@ void main() {
       await tester.tap(find.text(AppStrings.addCalorieButton));
       await tester.pump();
 
-      expect(find.text(AppStrings.added), findsOneWidget);
+      // フォームがクリアされ食品名フィールドが空になっていることを確認
+      final nameField = tester.widget<TextFormField>(
+          find.widgetWithText(TextFormField, AppStrings.foodName));
+      expect(nameField.controller?.text ?? '', isEmpty);
     });
 
     testWidgets('お気に入りから追加ボタンをタップするとFavoritesScreenに遷移する',

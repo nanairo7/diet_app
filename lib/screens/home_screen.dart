@@ -306,15 +306,5 @@ class _InlineEntryFormState extends State<_InlineEntryForm> {
     _proteinController.clear();
     setState(() => _addToFavorites = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(
-          savedToFavorites
-              ? '${AppStrings.added}・${AppStrings.favoriteAdded}'
-              : AppStrings.added,
-        ),
-      ),
-    );
   }
 }
