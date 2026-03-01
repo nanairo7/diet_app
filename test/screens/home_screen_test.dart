@@ -130,4 +130,37 @@ void main() {
       expect(find.textContaining(AppStrings.totalCalories), findsOneWidget);
     });
   });
+
+  group('HomeScreen - お気に入りボタン', () {
+    testWidgets('今日タブで星アイコンが表示される', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      await tester.pump();
+
+      expect(find.byIcon(Icons.star_outline), findsOneWidget);
+    });
+
+    testWidgets('星アイコンをタップするとFavoritesScreenに遷移する', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.star_outline));
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppStrings.favorites), findsOneWidget);
+    });
+
+    testWidgets('履歴タブに切り替えると星アイコンが消える', (tester) async {
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(await _buildTestWidget());
+      await tester.pump();
+
+      await tester.tap(find.text(AppStrings.history));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.star_outline), findsNothing);
+    });
+  });
 }
