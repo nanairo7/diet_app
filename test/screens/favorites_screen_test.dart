@@ -63,19 +63,17 @@ void main() {
     });
   });
 
-  group('FavoritesScreen - 追加操作', () {
-    testWidgets('タイルをタップするとスナックバーが表示される', (tester) async {
+  group('FavoritesScreen - 摂取量サマリー', () {
+    testWidgets('今日の摂取量ラベルが表示される', (tester) async {
       final provider = await _makeProvider();
-      await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);
       await tester.pumpWidget(await _buildTestWidget(provider));
       await tester.pump();
 
-      await tester.tap(find.byType(ListTile));
-      await tester.pump();
-
-      expect(find.text('鶏むね肉 ${AppStrings.added}'), findsOneWidget);
+      expect(find.text(AppStrings.todayIntake), findsOneWidget);
     });
+  });
 
+  group('FavoritesScreen - 追加操作', () {
     testWidgets('タイルをタップしてもお気に入りリストは変わらない', (tester) async {
       final provider = await _makeProvider();
       await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);

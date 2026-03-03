@@ -46,6 +46,7 @@ class AppStrings {
       '通知の許可が必要です。設定アプリから通知を有効にしてください。';
 
   // Favorites
+  static const String todayIntake = '今日の摂取量';
   static const String favorites = 'お気に入り';
   static const String addToFavorites = 'お気に入りに登録';
   static const String favoritesEmpty = 'お気に入りはまだありません';
