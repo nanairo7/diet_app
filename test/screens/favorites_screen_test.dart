@@ -64,25 +64,25 @@ void main() {
   });
 
   group('FavoritesScreen - 追加操作', () {
-    testWidgets('追加ボタンをタップするとスナックバーが表示される', (tester) async {
+    testWidgets('タイルをタップするとスナックバーが表示される', (tester) async {
       final provider = await _makeProvider();
       await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);
       await tester.pumpWidget(await _buildTestWidget(provider));
       await tester.pump();
 
-      await tester.tap(find.byIcon(Icons.add_circle_outline));
+      await tester.tap(find.byType(ListTile));
       await tester.pump();
 
       expect(find.text('鶏むね肉 ${AppStrings.added}'), findsOneWidget);
     });
 
-    testWidgets('追加ボタンをタップしてもお気に入りリストは変わらない', (tester) async {
+    testWidgets('タイルをタップしてもお気に入りリストは変わらない', (tester) async {
       final provider = await _makeProvider();
       await provider.addFavorite(name: '鶏むね肉', calories: 150, protein: 30);
       await tester.pumpWidget(await _buildTestWidget(provider));
       await tester.pump();
 
-      await tester.tap(find.byIcon(Icons.add_circle_outline));
+      await tester.tap(find.byType(ListTile));
       await tester.pump();
 
       expect(provider.favorites.length, 1);

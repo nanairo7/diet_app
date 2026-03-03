@@ -26,21 +26,12 @@ class FavoriteEntryTile extends StatelessWidget {
         '${entry.protein.toStringAsFixed(1)} ${AppStrings.gramUnit}',
         style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            tooltip: AppStrings.addFromFavorites,
-            onPressed: onAdd,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            tooltip: AppStrings.delete,
-            onPressed: onDelete,
-          ),
-        ],
+      trailing: IconButton(
+        icon: const Icon(Icons.delete_outline),
+        tooltip: AppStrings.delete,
+        onPressed: onDelete,
       ),
+      onTap: onAdd,
     );
   }
 }

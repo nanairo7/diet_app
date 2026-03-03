@@ -55,7 +55,7 @@ void main() {
       expect(find.textContaining(AppStrings.gramUnit), findsOneWidget);
     });
 
-    testWidgets('追加アイコンボタンが表示される', (tester) async {
+    testWidgets('タイルがタップ可能（onTapが設定されている）', (tester) async {
       await tester.pumpWidget(_buildTestWidget(
         FavoriteEntryTile(
           entry: _makeEntry(),
@@ -63,7 +63,7 @@ void main() {
           onDelete: () {},
         ),
       ));
-      expect(find.byIcon(Icons.add_circle_outline), findsOneWidget);
+      expect(find.byType(ListTile), findsOneWidget);
     });
 
     testWidgets('削除アイコンボタンが表示される', (tester) async {
@@ -79,7 +79,7 @@ void main() {
   });
 
   group('FavoriteEntryTile - コールバック', () {
-    testWidgets('追加ボタンタップでonAddが呼ばれる', (tester) async {
+    testWidgets('タイルタップでonAddが呼ばれる', (tester) async {
       bool addCalled = false;
       await tester.pumpWidget(_buildTestWidget(
         FavoriteEntryTile(
@@ -88,7 +88,7 @@ void main() {
           onDelete: () {},
         ),
       ));
-      await tester.tap(find.byIcon(Icons.add_circle_outline));
+      await tester.tap(find.byType(ListTile));
       await tester.pump();
       expect(addCalled, isTrue);
     });
