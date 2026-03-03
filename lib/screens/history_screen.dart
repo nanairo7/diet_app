@@ -316,7 +316,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Column(
       children: [
         Expanded(
-          child: record == null
+          child: (record == null || record.entries.isEmpty)
               ? Center(
                   child: Text(
                     AppStrings.noRecordForDay,
