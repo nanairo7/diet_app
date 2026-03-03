@@ -80,6 +80,33 @@ class DietProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addEntryForDate({
+    required String dateKey,
+    required String name,
+    required double calories,
+    required double protein,
+  }) async {
+    final entry = FoodEntry(
+      id: _uuid.v4(),
+      name: name,
+      calories: calories,
+      protein: protein,
+      createdAt: DateTime.now(),
+    );
+
+    if (dateKey == _todayKey()) {
+      _todayRecord.entries.add(entry);
+      await _storage.saveDailyRecord(_todayRecord);
+    } else {
+      final record = _storage.loadDailyRecord(dateKey) ??
+          DailyRecord(dateKey: dateKey, entries: []);
+      record.entries.add(entry);
+      await _storage.saveDailyRecord(record);
+    }
+    _allDates = _storage.getAllRecordDates();
+    notifyListeners();
+  }
+
   Future<void> deleteEntry(String entryId) async {
     _todayRecord.entries.removeWhere((e) => e.id == entryId);
     await _storage.saveDailyRecord(_todayRecord);

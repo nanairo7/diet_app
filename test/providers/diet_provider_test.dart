@@ -197,6 +197,58 @@ void main() {
     });
   });
 
+  group('DietProvider - addEntryForDate', () {
+    test('過去の日付にエントリを追加できる', () async {
+      await provider.addEntryForDate(
+        dateKey: '2024-01-01',
+        name: '朝食',
+        calories: 300,
+        protein: 15,
+      );
+      final record = provider.getRecordForDate('2024-01-01');
+      expect(record, isNotNull);
+      expect(record!.entries.length, 1);
+      expect(record.entries.first.name, '朝食');
+    });
+
+    test('過去日付への追加でallDatesが更新される', () async {
+      await provider.addEntryForDate(
+        dateKey: '2024-01-01',
+        name: '昼食',
+        calories: 500,
+        protein: 20,
+      );
+      expect(provider.allDates, contains('2024-01-01'));
+    });
+
+    test('今日の日付でaddEntryForDateを呼ぶとtodayRecordに反映される', () async {
+      final todayKey = provider.todayRecord.dateKey;
+      await provider.addEntryForDate(
+        dateKey: todayKey,
+        name: '夕食',
+        calories: 700,
+        protein: 30,
+      );
+      expect(provider.todayRecord.entries.length, 1);
+      expect(provider.todayRecord.entries.first.name, '夕食');
+    });
+
+    test('記録のない過去日付に追加すると新規DailyRecordが作成される', () async {
+      expect(provider.getRecordForDate('2023-06-15'), isNull);
+
+      await provider.addEntryForDate(
+        dateKey: '2023-06-15',
+        name: 'テスト食品',
+        calories: 100,
+        protein: 5,
+      );
+
+      final record = provider.getRecordForDate('2023-06-15');
+      expect(record, isNotNull);
+      expect(record!.dateKey, '2023-06-15');
+    });
+  });
+
   group('DietProvider - 永続化', () {
     test('init後に保存済みの目標体重が復元される', () async {
       await provider.setTargetWeight(75.0);
