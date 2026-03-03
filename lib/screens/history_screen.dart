@@ -7,6 +7,8 @@ import '../constants/app_strings.dart';
 import '../models/daily_record.dart';
 import '../providers/diet_provider.dart';
 import '../widgets/daily_record_tile.dart';
+import '../widgets/food_entry_tile.dart';
+import '../widgets/summary_card.dart';
 import 'day_detail_screen.dart';
 
 // ─── 食事追加ボトムシート ───────────────────────────────────────────
@@ -324,13 +326,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ),
                   ),
                 )
-              : ListView(
-                  children: [
-                    DailyRecordTile(
-                      record: record,
-                      onTap: () => _openDayDetail(context, record),
-                    ),
-                  ],
+              : ListView.separated(
+                  itemCount: record.entries.length + 1,
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return SummaryCard(
+                        totalCalories: record.totalCalories,
+                        totalProtein: record.totalProtein,
+                        entryCount: record.entryCount,
+                      );
+                    }
+                    return FoodEntryTile(
+                      entry: record.entries[index - 1],
+                    );
+                  },
                 ),
         ),
         Padding(
