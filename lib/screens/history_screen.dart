@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../constants/app_strings.dart';
@@ -375,16 +376,42 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
         Padding(
           padding: const EdgeInsets.all(16),
-          child: SizedBox(
-            width: double.infinity,
-            child: FilledButton.tonal(
-              onPressed: () => _openAddEntrySheet(context, dateKey),
-              child: const Text(AppStrings.addFood),
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: () => _openAddEntrySheet(context, dateKey),
+                  child: const Text(AppStrings.addFood),
+                ),
+              ),
+              if (record != null && record.entries.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                IconButton.outlined(
+                  onPressed: () => _shareRecord(record, _selectedDay!),
+                  icon: const Icon(Icons.share),
+                  tooltip: AppStrings.shareRecord,
+                ),
+              ],
+            ],
           ),
         ),
       ],
     );
+  }
+
+  void _shareRecord(DailyRecord record, DateTime day) {
+    final formattedDate = DateFormat.yMMMEd('ja').format(day);
+    final buffer = StringBuffer();
+    buffer.writeln('📅 ${formattedDate}の食事記録');
+    buffer.writeln('🔥 合計カロリー: ${record.totalCalories.toStringAsFixed(0)} ${AppStrings.kcalUnit}');
+    buffer.writeln('💪 合計タンパク質: ${record.totalProtein.toStringAsFixed(1)} ${AppStrings.gramUnit}');
+    buffer.writeln('📝 記録数: ${record.entryCount} ${AppStrings.entryUnit}');
+    buffer.writeln();
+    for (final entry in record.entries) {
+      buffer.writeln('🍽 ${entry.name}');
+      buffer.writeln('   ${entry.calories.toStringAsFixed(0)} ${AppStrings.kcalUnit} / ${entry.protein.toStringAsFixed(1)} ${AppStrings.gramUnit}');
+    }
+    Share.share(buffer.toString().trimRight());
   }
 
   void _openAddEntrySheet(BuildContext context, String dateKey) {
