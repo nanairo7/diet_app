@@ -27,6 +27,7 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
   final _nameController = TextEditingController();
   final _caloriesController = TextEditingController();
   final _proteinController = TextEditingController();
+  bool _addToFavorites = false;
 
   @override
   void dispose() {
@@ -121,9 +122,25 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
               ],
             ),
             const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _submit,
-              child: const Text(AppStrings.addButton),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                    onPressed: _submit,
+                    child: const Text(AppStrings.addButton),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton.outlined(
+                  onPressed: () =>
+                      setState(() => _addToFavorites = !_addToFavorites),
+                  icon: Icon(
+                    _addToFavorites ? Icons.star : Icons.star_outline,
+                    color: _addToFavorites ? Colors.amber : null,
+                  ),
+                  tooltip: AppStrings.addToFavorites,
+                ),
+              ],
             ),
           ],
         ),
@@ -134,13 +151,26 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final name = _nameController.text.trim();
+    final calories = double.parse(_caloriesController.text.trim());
+    final protein = double.parse(_proteinController.text.trim());
+    final savedToFavorites = _addToFavorites;
     final provider = context.read<DietProvider>();
+
     await provider.addEntryForDate(
       dateKey: widget.dateKey,
-      name: _nameController.text.trim(),
-      calories: double.parse(_caloriesController.text.trim()),
-      protein: double.parse(_proteinController.text.trim()),
+      name: name,
+      calories: calories,
+      protein: protein,
     );
+
+    if (savedToFavorites) {
+      await provider.addFavorite(
+        name: name,
+        calories: calories,
+        protein: protein,
+      );
+    }
 
     if (!mounted) return;
     Navigator.pop(context);
