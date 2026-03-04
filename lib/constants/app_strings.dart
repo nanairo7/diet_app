@@ -35,6 +35,7 @@ class AppStrings {
   static const String remainingCalorie = '残り';
   static const String notSet = '未設定';
   static const String noRecordForDay = 'この日の記録はありません';
+  static const String shareRecord = '記録をシェア';
   static const String calendarView = 'カレンダー';
   static const String listView = 'リスト';
 
