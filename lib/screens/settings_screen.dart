@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_strings.dart';
+import '../models/notification_slot.dart';
 import '../providers/diet_provider.dart';
 import '../services/notification_service.dart';
 
@@ -18,7 +19,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _notificationService = NotificationService();
   double? _previewGoal;
   bool _notificationEnabled = false;
-  TimeOfDay _notificationTime = const TimeOfDay(hour: 20, minute: 0);
+  List<NotificationSlot> _slots = const [
+    NotificationSlot(enabled: false, hour: 8, minute: 0),
+    NotificationSlot(enabled: false, hour: 12, minute: 0),
+    NotificationSlot(enabled: true, hour: 20, minute: 0),
+  ];
 
   @override
   void initState() {
@@ -35,8 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _loadNotificationSettings(DietProvider provider) {
     setState(() {
       _notificationEnabled = provider.notificationEnabled;
-      _notificationTime =
-          TimeOfDay(hour: provider.notificationHour, minute: provider.notificationMinute);
+      _slots = List.of(provider.notificationSlots);
     });
   }
 
@@ -67,40 +71,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
         return;
       }
-      await _notificationService.scheduleDaily(
-        hour: _notificationTime.hour,
-        minute: _notificationTime.minute,
-      );
+      await _notificationService.scheduleSlots(_slots);
     } else {
-      await _notificationService.cancel();
+      await _notificationService.cancelAll();
     }
     if (!mounted) return;
     await context.read<DietProvider>().saveNotificationSettings(
           enabled: enabled,
-          hour: _notificationTime.hour,
-          minute: _notificationTime.minute,
+          slots: _slots,
         );
     setState(() => _notificationEnabled = enabled);
   }
 
-  Future<void> _pickTime() async {
+  Future<void> _toggleSlot(int index, bool enabled) async {
+    final updated = List.of(_slots);
+    updated[index] = updated[index].copyWith(enabled: enabled);
+    setState(() => _slots = updated);
+    if (_notificationEnabled) {
+      await _notificationService.scheduleSlots(updated);
+    }
+    await context.read<DietProvider>().saveNotificationSettings(
+          enabled: _notificationEnabled,
+          slots: updated,
+        );
+  }
+
+  Future<void> _pickTime(int index) async {
+    final current = _slots[index];
     final picked = await showTimePicker(
       context: context,
-      initialTime: _notificationTime,
+      initialTime: TimeOfDay(hour: current.hour, minute: current.minute),
     );
     if (picked == null || !mounted) return;
-    setState(() => _notificationTime = picked);
+    final updated = List.of(_slots);
+    updated[index] = updated[index].copyWith(
+      hour: picked.hour,
+      minute: picked.minute,
+    );
+    setState(() => _slots = updated);
     if (_notificationEnabled) {
-      await _notificationService.scheduleDaily(
-        hour: picked.hour,
-        minute: picked.minute,
-      );
-      await context.read<DietProvider>().saveNotificationSettings(
-            enabled: true,
-            hour: picked.hour,
-            minute: picked.minute,
-          );
+      await _notificationService.scheduleSlots(updated);
     }
+    await context.read<DietProvider>().saveNotificationSettings(
+          enabled: _notificationEnabled,
+          slots: updated,
+        );
   }
 
   @override
@@ -200,18 +215,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         if (_notificationEnabled) ...[
                           const Divider(height: 1),
-                          ListTile(
-                            leading: const Icon(Icons.access_time),
-                            title: const Text(AppStrings.notificationTime),
-                            trailing: Text(
-                              _notificationTime.format(context),
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onTap: _pickTime,
-                          ),
+                          _buildSlotTile(context, theme, 0, AppStrings.notificationMorning),
+                          const Divider(height: 1, indent: 16, endIndent: 16),
+                          _buildSlotTile(context, theme, 1, AppStrings.notificationNoon),
+                          const Divider(height: 1, indent: 16, endIndent: 16),
+                          _buildSlotTile(context, theme, 2, AppStrings.notificationEvening),
                         ],
                       ],
                     ),
@@ -222,6 +230,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSlotTile(
+      BuildContext context, ThemeData theme, int index, String label) {
+    final slot = _slots[index];
+    final timeLabel = TimeOfDay(hour: slot.hour, minute: slot.minute)
+        .format(context);
+    return ListTile(
+      leading: SizedBox(
+        width: 32,
+        child: Text(
+          label,
+          style: theme.textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      title: slot.enabled
+          ? GestureDetector(
+              onTap: () => _pickTime(index),
+              child: Text(
+                timeLabel,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : Text(
+              timeLabel,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+      trailing: Switch(
+        value: slot.enabled,
+        onChanged: (v) => _toggleSlot(index, v),
+      ),
+      onTap: slot.enabled ? () => _pickTime(index) : null,
     );
   }
 
