@@ -104,6 +104,36 @@ void main() {
     });
   });
 
+  group('SettingsScreen - 通知スロット', () {
+    testWidgets('通知ONで朝・昼・晩のラベルが表示される', (tester) async {
+      final values = <String, Object>{
+        'diet_notification_enabled': true,
+      };
+      SharedPreferences.setMockInitialValues(values);
+      final storage = StorageService();
+      final provider = DietProvider(storage);
+      await provider.init();
+      await tester.pumpWidget(ChangeNotifierProvider<DietProvider>.value(
+        value: provider,
+        child: const MaterialApp(home: SettingsScreen()),
+      ));
+      await tester.pump();
+
+      expect(find.text(AppStrings.notificationMorning), findsOneWidget);
+      expect(find.text(AppStrings.notificationNoon), findsOneWidget);
+      expect(find.text(AppStrings.notificationEvening), findsOneWidget);
+    });
+
+    testWidgets('通知OFFでは朝・昼・晩のラベルが表示されない', (tester) async {
+      await tester.pumpWidget(await _buildTestWidget());
+      await tester.pump();
+
+      expect(find.text(AppStrings.notificationMorning), findsNothing);
+      expect(find.text(AppStrings.notificationNoon), findsNothing);
+      expect(find.text(AppStrings.notificationEvening), findsNothing);
+    });
+  });
+
   group('SettingsScreen - 保存', () {
     testWidgets('正しい値を入力して保存すると保存完了スナックバーが表示される', (tester) async {
       await tester.pumpWidget(await _buildTestWidget());

@@ -45,6 +45,9 @@ class AppStrings {
   static const String notificationTime = '通知時刻';
   static const String notificationPermissionDenied =
       '通知の許可が必要です。設定アプリから通知を有効にしてください。';
+  static const String notificationMorning = '朝';
+  static const String notificationNoon = '昼';
+  static const String notificationEvening = '晩';
 
   // Favorites
   static const String todayIntake = '今日の摂取量';

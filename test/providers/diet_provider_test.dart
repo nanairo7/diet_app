@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diet_app/models/daily_record.dart';
 import 'package:diet_app/providers/diet_provider.dart';
 import 'package:diet_app/services/storage_service.dart';
+// ignore: unused_import
+import 'package:diet_app/models/notification_slot.dart';
 
 void main() {
   late StorageService storage;
@@ -35,6 +37,16 @@ void main() {
 
     test('初期状態では全日付リストが空', () {
       expect(provider.allDates, isEmpty);
+    });
+
+    test('初期状態では通知スロットが3件', () {
+      expect(provider.notificationSlots.length, 3);
+    });
+
+    test('初期状態では朝・昼スロットがOFF、晩スロットがON', () {
+      expect(provider.notificationSlots[0].enabled, isFalse); // 朝
+      expect(provider.notificationSlots[1].enabled, isFalse); // 昼
+      expect(provider.notificationSlots[2].enabled, isTrue);  // 晩
     });
   });
 
