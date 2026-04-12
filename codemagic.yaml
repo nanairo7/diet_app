@@ -40,11 +40,12 @@ workflows:
 
       - name: TestFlight へアップロード
         script: |
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/authkey.p8
           app-store-connect publish \
             --path "$(find build/ios/ipa -name '*.ipa' | head -1)" \
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
-            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY \
+            --private-key @file:/tmp/authkey.p8 \
             --testflight
 
     artifacts:
