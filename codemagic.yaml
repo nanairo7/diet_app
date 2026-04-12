@@ -40,7 +40,9 @@ workflows:
 
       - name: TestFlight へアップロード
         script: |
-          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/authkey.p8
+          # base64デコードを試み、失敗したらそのまま使用
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 -d > /tmp/authkey.p8 2>/dev/null \
+            || echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/authkey.p8
           app-store-connect publish \
             --path "$(find build/ios/ipa -name '*.ipa' | head -1)" \
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
