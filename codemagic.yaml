@@ -11,8 +11,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: jp.nanairo.calorierecord
-        certificate: diet_app_distribution
-        provisioning_profile: diet_app_appstore
       vars:
         BUNDLE_ID: jp.nanairo.calorierecord
         XCODE_PROJECT: ios/Runner.xcodeproj
