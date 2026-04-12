@@ -38,16 +38,20 @@ workflows:
           flutter build ipa --release \
             --export-options-plist=/Users/builder/export_options.plist
 
+      - name: TestFlight へアップロード
+        script: |
+          app-store-connect publish \
+            --path "$(find build/ios/ipa -name '*.ipa' | head -1)" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY \
+            --testflight
+
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
       email:
         recipients:
           - register01010@gmail.com
