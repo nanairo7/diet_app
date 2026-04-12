@@ -49,7 +49,7 @@ workflows:
         submit_to_testflight: true
       email:
         recipients:
-          - $CM_BUILD_REPORTER_EMAIL
+          - register01010@gmail.com
         notify:
           success: true
           failure: true
