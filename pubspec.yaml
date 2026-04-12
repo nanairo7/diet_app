@@ -36,16 +36,16 @@ flutter:
 flutter_launcher_icons:
   android: false
   ios: true
-  image_path: "assets/icon/app_icon.png"
+  image_path: "assets/icon/calorie_icon.jpg"
   min_sdk_android: 21
   ios_content_mode: scaleAspectFit
   remove_alpha_ios: true
 
 flutter_native_splash:
-  color: "#4CAF50"
-  image: assets/icon/app_icon.png
-  image_dark: assets/icon/app_icon.png
-  color_dark: "#1B5E20"
+  color: "#E65100"
+  image: assets/icon/calorie_icon.jpg
+  image_dark: assets/icon/calorie_icon.jpg
+  color_dark: "#BF360C"
   ios: true
   android: false
   fullscreen: false
