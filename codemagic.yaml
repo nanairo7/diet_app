@@ -11,8 +11,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: jp.nanairo.calorierecord
-        certificate: diet_app_distribution
-        provisioning_profile: diet_app_appstore
       vars:
         BUNDLE_ID: jp.nanairo.calorierecord
         XCODE_PROJECT: ios/Runner.xcodeproj
@@ -36,19 +34,26 @@ workflows:
 
       - name: iOS ビルド (IPA)
         script: |
+          xcode-project use-profiles
           flutter build ipa --release \
+            --build-number=$BUILD_NUMBER \
             --export-options-plist=/Users/builder/export_options.plist
+
+      - name: TestFlight へアップロード
+        script: |
+          printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/authkey.p8
+          app-store-connect publish \
+            --path "$(find build/ios/ipa -name '*.ipa' | head -1)" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --private-key @file:/tmp/authkey.p8 \
+            --testflight
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
       email:
         recipients:
           - register01010@gmail.com
