@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/app_strings.dart';
 import '../providers/diet_provider.dart';
+import '../widgets/keyboard_dismissible.dart';
 import 'home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -59,7 +60,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      body: SafeArea(
+      body: KeyboardDismissible(
+        child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
           child: Column(
@@ -153,6 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ],
           ),
+        ),
         ),
       ),
     );

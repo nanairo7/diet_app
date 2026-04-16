@@ -6,6 +6,7 @@ import '../constants/app_strings.dart';
 import '../models/daily_record.dart';
 import '../providers/diet_provider.dart';
 import '../widgets/food_entry_tile.dart';
+import '../widgets/keyboard_dismissible.dart';
 import '../widgets/summary_card.dart';
 
 class DayDetailScreen extends StatelessWidget {
@@ -28,7 +29,8 @@ class DayDetailScreen extends StatelessWidget {
         tooltip: AppStrings.addFood,
         child: const Icon(Icons.add),
       ),
-      body: Consumer<DietProvider>(
+      body: KeyboardDismissible(
+        child: Consumer<DietProvider>(
         builder: (context, provider, _) {
           // 最新データを provider から取得（追加後に即時反映）
           final liveRecord = provider.getRecordForDate(dateKey) ?? record;
@@ -58,6 +60,7 @@ class DayDetailScreen extends StatelessWidget {
             ),
           );
         },
+        ),
       ),
     );
   }
