@@ -5,6 +5,7 @@ import '../constants/app_strings.dart';
 import '../models/notification_slot.dart';
 import '../providers/diet_provider.dart';
 import '../services/notification_service.dart';
+import '../widgets/keyboard_dismissible.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -126,7 +127,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text(AppStrings.settings),
       ),
-      body: Center(
+      body: KeyboardDismissible(
+        child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
           child: SingleChildScrollView(
@@ -228,6 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
+        ),
         ),
       ),
     );
