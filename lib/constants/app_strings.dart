@@ -68,6 +68,8 @@ class AppStrings {
   static const String graphMax = '最大';
   static const String graphTotal = '合計';
   static const String graphNoData = 'この期間の記録がありません';
+  static const String graphPrev = '前の期間';
+  static const String graphNext = '次の期間';
 
   // Onboarding
   static const String onboardingTitle = 'カロリー記録へようこそ';

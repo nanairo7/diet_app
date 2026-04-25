@@ -25,23 +25,41 @@ class _GraphScreenState extends State<GraphScreen> {
   _Period _period = _Period.weekly;
   _Metric _metric = _Metric.calories;
 
+  /// 0 = 今週／今月、-1 = 前の週／月、-2 = さらに前…
+  int _offset = 0;
+
   // ── 表示対象の日付リストを返す ────────────────────────────────────────
   List<DateTime> _buildDateRange() {
-    final today = DateTime.now();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     if (_period == _Period.weekly) {
-      // 今日を含む直近7日
-      return List.generate(
-        7,
-        (i) => DateTime(today.year, today.month, today.day - 6 + i),
-      );
+      // offset 0: today-6 〜 today
+      // offset -1: today-13 〜 today-7  …
+      final end = DateTime(today.year, today.month, today.day + 7 * _offset);
+      final start = DateTime(end.year, end.month, end.day - 6);
+      return List.generate(7, (i) => DateTime(start.year, start.month, start.day + i));
     } else {
-      // 今月の1日〜今日
-      final firstDay = DateTime(today.year, today.month, 1);
-      final days = today.day;
-      return List.generate(
-        days,
-        (i) => DateTime(firstDay.year, firstDay.month, firstDay.day + i),
-      );
+      // offset 0: 今月1日〜今日
+      // offset -1: 先月1日〜先月末日  …
+      final base = DateTime(today.year, today.month + _offset, 1);
+      final isCurrentMonth = _offset == 0;
+      final lastDay = isCurrentMonth
+          ? today
+          : DateTime(base.year, base.month + 1, 0); // 月末日
+      final days = lastDay.day;
+      return List.generate(days, (i) => DateTime(base.year, base.month, i + 1));
+    }
+  }
+
+  // ── 期間ラベル（ナビゲーション行に表示） ─────────────────────────────
+  String _periodLabel(List<DateTime> dates) {
+    if (_period == _Period.weekly) {
+      final s = DateFormat('M/d', 'ja').format(dates.first);
+      final e = DateFormat('M/d', 'ja').format(dates.last);
+      return '$s 〜 $e';
+    } else {
+      return DateFormat('yyyy年M月', 'ja').format(dates.first);
     }
   }
 
@@ -95,6 +113,7 @@ class _GraphScreenState extends State<GraphScreen> {
         return Column(
           children: [
             _buildControls(context),
+            _buildPeriodNav(dates),
             if (hasData) _buildSummaryRow(values),
             Expanded(
               child: hasData
@@ -128,7 +147,10 @@ class _GraphScreenState extends State<GraphScreen> {
             ],
             selected: {_period},
             onSelectionChanged: (s) =>
-                setState(() => _period = s.first),
+                setState(() {
+                  _period = s.first;
+                  _offset = 0; // 期間切り替え時はリセット
+                }),
             style: const ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -160,6 +182,43 @@ class _GraphScreenState extends State<GraphScreen> {
             style: const ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── 期間ナビゲーション行（< ラベル >） ────────────────────────────────
+  Widget _buildPeriodNav(List<DateTime> dates) {
+    final isLatest = _offset == 0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => setState(() => _offset--),
+            tooltip: AppStrings.graphPrev,
+          ),
+          SizedBox(
+            width: 160,
+            child: Text(
+              _periodLabel(dates),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.chevron_right,
+              color: isLatest ? Colors.grey.shade300 : null,
+            ),
+            onPressed: isLatest ? null : () => setState(() => _offset++),
+            tooltip: isLatest ? null : AppStrings.graphNext,
           ),
         ],
       ),
@@ -293,11 +352,7 @@ class _GraphScreenState extends State<GraphScreen> {
                 reservedSize: 44,
                 getTitlesWidget: (value, meta) {
                   if (value == meta.max) return const SizedBox();
-                  final isCalories = _metric == _Metric.calories;
-                  final label = isCalories
-                      ? value.toStringAsFixed(0)
-                      : value.toStringAsFixed(0);
-                  return Text(label,
+                  return Text(value.toStringAsFixed(0),
                       style: const TextStyle(fontSize: 10),
                       textAlign: TextAlign.right);
                 },
