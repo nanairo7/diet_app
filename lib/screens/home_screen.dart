@@ -7,6 +7,7 @@ import '../widgets/calorie_arc_gauge.dart';
 import '../widgets/food_entry_tile.dart';
 import '../widgets/keyboard_dismissible.dart';
 import 'favorites_screen.dart';
+import 'graph_screen.dart';
 import 'history_screen.dart';
 import 'settings_screen.dart';
 
@@ -25,7 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _currentIndex == 0 ? AppStrings.todayCalories : AppStrings.history,
+          _currentIndex == 0
+              ? AppStrings.todayCalories
+              : _currentIndex == 1
+                  ? AppStrings.history
+                  : AppStrings.graph,
         ),
         actions: [
           IconButton(
@@ -36,7 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: KeyboardDismissible(
-        child: _currentIndex == 0 ? _buildTodayView() : const HistoryScreen(),
+        child: _currentIndex == 0
+            ? _buildTodayView()
+            : _currentIndex == 1
+                ? const HistoryScreen()
+                : const GraphScreen(),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
@@ -51,6 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             icon: Icon(Icons.calendar_month),
             label: AppStrings.history,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bar_chart),
+            label: AppStrings.graph,
           ),
         ],
       ),

@@ -58,6 +58,19 @@ class AppStrings {
   static const String favoriteAdded = 'お気に入りに登録しました';
   static const String favoriteDeleted = 'お気に入りから削除しました';
 
+  // Graph
+  static const String graph = 'グラフ';
+  static const String graphWeekly = '週';
+  static const String graphMonthly = '月';
+  static const String graphCalories = 'カロリー';
+  static const String graphProtein = 'タンパク質';
+  static const String graphAvg = '平均';
+  static const String graphMax = '最大';
+  static const String graphTotal = '合計';
+  static const String graphNoData = 'この期間の記録がありません';
+  static const String graphPrev = '前の期間';
+  static const String graphNext = '次の期間';
+
   // Onboarding
   static const String onboardingTitle = 'カロリー記録へようこそ';
   static const String onboardingSubtitle = '毎日の食事を記録して\n理想の体型を目指しましょう';
