@@ -189,6 +189,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   late DateTime _focusedDay;
   DateTime? _selectedDay;
   CalendarFormat _calendarFormat = CalendarFormat.month;
+  final _shareButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -387,6 +388,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               if (record != null && record.entries.isNotEmpty) ...[
                 const SizedBox(width: 8),
                 IconButton.outlined(
+                  key: _shareButtonKey,
                   onPressed: () async => _shareRecord(record, _selectedDay!),
                   icon: const Icon(Icons.share),
                   tooltip: AppStrings.shareRecord,
@@ -411,7 +413,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
       buffer.writeln('🍽 ${entry.name}');
       buffer.writeln('   ${entry.calories.toStringAsFixed(0)} ${AppStrings.kcalUnit} / ${entry.protein.toStringAsFixed(1)} ${AppStrings.gramUnit}');
     }
-    await Share.share(buffer.toString().trimRight());
+
+    // iOS 18+ では popoverPresentationController が iPhone でも非 null になるため
+    // sharePositionOrigin を渡さないとシートが表示されない。
+    // GlobalKey からボタンの画面座標を取得して渡す。
+    final renderBox =
+        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    final sharePositionOrigin =
+        renderBox != null ? renderBox.localToGlobal(Offset.zero) & renderBox.size : null;
+
+    await Share.share(
+      buffer.toString().trimRight(),
+      sharePositionOrigin: sharePositionOrigin,
+    );
   }
 
   void _openAddEntrySheet(BuildContext context, String dateKey) {
