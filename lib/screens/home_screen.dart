@@ -5,6 +5,7 @@ import '../constants/app_strings.dart';
 import '../providers/diet_provider.dart';
 import '../widgets/calorie_arc_gauge.dart';
 import '../widgets/food_entry_tile.dart';
+import '../widgets/keyboard_dismissible.dart';
 import 'favorites_screen.dart';
 import 'history_screen.dart';
 import 'settings_screen.dart';
@@ -34,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _currentIndex == 0 ? _buildTodayView() : const HistoryScreen(),
+      body: KeyboardDismissible(
+        child: _currentIndex == 0 ? _buildTodayView() : const HistoryScreen(),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
