@@ -40,8 +40,10 @@ class NotificationService {
   }
 
   /// 有効なスロット（最大3件）をスケジュールする。
-  /// まず既存の全通知をキャンセルしてから再スケジュール。
+  /// まず init() でタイムゾーンとプラグインを確実に初期化してから
+  /// 既存の全通知をキャンセルして再スケジュール。
   Future<void> scheduleSlots(List<NotificationSlot> slots) async {
+    await init(); // tz.local の設定とプラグイン初期化を保証
     await cancelAll();
     for (int i = 0; i < slots.length && i < _slotIds.length; i++) {
       if (!slots[i].enabled) continue;
