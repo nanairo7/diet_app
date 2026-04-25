@@ -24,6 +24,7 @@ dependencies:
   timezone: ^0.9.4
   flutter_timezone: ^1.0.6
   share_plus: ^10.1.4
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
