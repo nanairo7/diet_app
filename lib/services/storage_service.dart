@@ -87,7 +87,7 @@ class StorageService {
       final legacyHour = i == 2 ? (_prefs.getInt(_notificationHourKey) ?? defaultHour) : defaultHour;
       final legacyMinute = i == 2 ? (_prefs.getInt(_notificationMinuteKey) ?? defaultMinute) : defaultMinute;
       slots.add(NotificationSlot(
-        enabled: _prefs.getBool('${prefix}_enabled') ?? (i == 2),
+        enabled: _prefs.getBool('${prefix}_enabled') ?? false,
         hour: _prefs.getInt('${prefix}_hour') ?? legacyHour,
         minute: _prefs.getInt('${prefix}_minute') ?? legacyMinute,
       ));

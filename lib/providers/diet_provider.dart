@@ -18,11 +18,10 @@ class DietProvider extends ChangeNotifier {
   List<String> _allDates = [];
   bool _isLoading = true;
   double? _targetWeight;
-  bool _notificationEnabled = false;
   List<NotificationSlot> _notificationSlots = const [
     NotificationSlot(enabled: false, hour: 8, minute: 0),
     NotificationSlot(enabled: false, hour: 12, minute: 0),
-    NotificationSlot(enabled: true, hour: 20, minute: 0),
+    NotificationSlot(enabled: false, hour: 20, minute: 0),
   ];
   List<FavoriteEntry> _favorites = [];
 
@@ -34,7 +33,7 @@ class DietProvider extends ChangeNotifier {
   double? get targetWeight => _targetWeight;
   double? get calorieGoal =>
       _targetWeight != null ? _targetWeight! * 34 : null;
-  bool get notificationEnabled => _notificationEnabled;
+  bool get notificationEnabled => _notificationSlots.any((s) => s.enabled);
   List<NotificationSlot> get notificationSlots => List.unmodifiable(_notificationSlots);
   List<FavoriteEntry> get favorites => List.unmodifiable(_favorites);
 
@@ -47,7 +46,6 @@ class DietProvider extends ChangeNotifier {
     await _storage.init();
     _allDates = _storage.getAllRecordDates();
     _targetWeight = _storage.loadTargetWeight();
-    _notificationEnabled = _storage.loadNotificationEnabled();
     _notificationSlots = _storage.loadNotificationSlots();
     _favorites = _storage.loadFavorites();
     final today = _storage.loadDailyRecord(_todayKey());
@@ -146,12 +144,10 @@ class DietProvider extends ChangeNotifier {
   }
 
   Future<void> saveNotificationSettings({
-    required bool enabled,
     required List<NotificationSlot> slots,
   }) async {
-    _notificationEnabled = enabled;
     _notificationSlots = slots;
-    await _storage.saveNotificationEnabled(enabled);
+    await _storage.saveNotificationEnabled(slots.any((s) => s.enabled));
     await _storage.saveNotificationSlots(slots);
     notifyListeners();
   }
