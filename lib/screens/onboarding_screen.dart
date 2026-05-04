@@ -92,17 +92,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              _FeatureTile(
+              const _FeatureTile(
                 icon: Icons.edit_note,
                 text: AppStrings.onboardingFeature1,
               ),
               const SizedBox(height: 12),
-              _FeatureTile(
+              const _FeatureTile(
                 icon: Icons.local_fire_department,
                 text: AppStrings.onboardingFeature2,
               ),
               const SizedBox(height: 12),
-              _FeatureTile(
+              const _FeatureTile(
                 icon: Icons.calendar_month,
                 text: AppStrings.onboardingFeature3,
               ),

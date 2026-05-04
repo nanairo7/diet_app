@@ -15,28 +15,41 @@ workflows:
         BUNDLE_ID: jp.nanairo.calorierecord
         XCODE_PROJECT: ios/Runner.xcodeproj
         XCODE_SCHEME: Runner
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
       groups:
         - app_store_connect  # Codemagic ダッシュボードで設定するグループ
 
     triggering:
       events:
         - push
+        - tag
       branch_patterns:
         - pattern: main
+          include: true
+      tag_patterns:
+        - pattern: 'v*'
           include: true
 
     scripts:
       - name: Flutter パッケージ取得
         script: flutter pub get
 
+      - name: Flutter 静的解析
+        script: flutter analyze --no-fatal-infos
+
       - name: テスト実行
         script: flutter test
 
+      - name: プロビジョニングプロファイルの適用
+        script: xcode-project use-profiles
+
       - name: iOS ビルド (IPA)
         script: |
-          xcode-project use-profiles
           flutter build ipa --release \
             --build-number=$BUILD_NUMBER \
+            --build-name=$(cat pubspec.yaml | grep "^version:" | awk '{print $2}' | cut -d'+' -f1) \
             --export-options-plist=/Users/builder/export_options.plist
 
       - name: TestFlight へアップロード
@@ -47,11 +60,13 @@ workflows:
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
             --private-key @file:/tmp/authkey.p8 \
-            --testflight
+            --testflight \
+            --whats-new "Codemagic 自動ビルド (Build $BUILD_NUMBER)"
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
 
     publishing:
       email:

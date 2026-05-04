@@ -49,7 +49,7 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
-		<key>NSUserNotificationUsageDescription</key>
+		<key>NSUserNotificationsUsageDescription</key>
 		<string>毎日の食事記録を忘れないようにリマインダー通知を送ります。</string>
 	</dict>
 </plist>

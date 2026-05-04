@@ -404,7 +404,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Future<void> _shareRecord(DailyRecord record, DateTime day) async {
     final formattedDate = DateFormat.yMMMEd('ja').format(day);
     final buffer = StringBuffer();
-    buffer.writeln('📅 ${formattedDate}の食事記録');
+    buffer.writeln('📅 $formattedDateの食事記録');
     buffer.writeln('🔥 合計カロリー: ${record.totalCalories.toStringAsFixed(0)} ${AppStrings.kcalUnit}');
     buffer.writeln('💪 合計タンパク質: ${record.totalProtein.toStringAsFixed(1)} ${AppStrings.gramUnit}');
     buffer.writeln('📝 記録数: ${record.entryCount} ${AppStrings.entryUnit}');
