@@ -42,6 +42,7 @@ class NotificationService {
   /// 有効なスロット（最大3件）をスケジュールする。
   /// まず既存の全通知をキャンセルしてから再スケジュール。
   Future<void> scheduleSlots(List<NotificationSlot> slots) async {
+    await init();
     await cancelAll();
     for (int i = 0; i < slots.length && i < _slotIds.length; i++) {
       if (!slots[i].enabled) continue;

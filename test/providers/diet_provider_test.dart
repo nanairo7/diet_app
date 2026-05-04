@@ -43,10 +43,10 @@ void main() {
       expect(provider.notificationSlots.length, 3);
     });
 
-    test('初期状態では朝・昼スロットがOFF、晩スロットがON', () {
+    test('初期状態では全スロットがOFF', () {
       expect(provider.notificationSlots[0].enabled, isFalse); // 朝
       expect(provider.notificationSlots[1].enabled, isFalse); // 昼
-      expect(provider.notificationSlots[2].enabled, isTrue);  // 晩
+      expect(provider.notificationSlots[2].enabled, isFalse); // 晩
     });
   });
 
