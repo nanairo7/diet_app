@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+  <!-- アプリはユーザーをクロスアプリ追跡しない -->
+  <key>NSPrivacyTracking</key>
+  <false/>
+
+  <!-- 追跡に使用するドメインなし -->
+  <key>NSPrivacyTrackingDomains</key>
+  <array/>
+
+  <!--
+    収集データの種類
+    このアプリが収集するデータはすべてデバイスローカル（SharedPreferences / iCloud）に保存され、
+    開発者サーバーへの送信は行わない。
+  -->
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array>
+    <!-- 食事記録（カロリー・タンパク質）= ヘルス＆フィットネスデータ -->
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeHealth</string>
+      <!-- 第三者サーバーへ送信しないため「収集しない」に相当 -->
+      <key>NSPrivacyCollectedDataTypeLinked</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypeTracking</key>
+      <false/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+      </array>
+    </dict>
+  </array>
+
+  <!--
+    プライバシーに関わる API のアクセス理由
+    Apple の Required Reason API リストに基づき宣言する。
+  -->
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array>
+
+    <!--
+      UserDefaults API
+      使用箇所: shared_preferences パッケージ（目標体重・通知設定の永続化）
+      理由コード CA92.1: 同一バンドル内のユーザーデフォルトへのアクセス
+    -->
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>CA92.1</string>
+      </array>
+    </dict>
+
+    <!--
+      ファイルタイムスタンプ API
+      使用箇所: Flutter エンジン（内部的なファイル管理）
+      理由コード C617.1: アプリの機能としてファイルのタイムスタンプにアクセスする
+    -->
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>C617.1</string>
+      </array>
+    </dict>
+
+    <!--
+      システムブート時刻 API
+      使用箇所: Flutter エンジン（アニメーション・タイマー計算）
+      理由コード 35F9.1: アプリ機能のためにイベントの順序付けに使用する
+    -->
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>35F9.1</string>
+      </array>
+    </dict>
+
+    <!--
+      ディスク空き容量 API
+      使用箇所: Flutter エンジン・path_provider（ストレージ確認）
+      理由コード 85F4.1: アプリ機能の一部としてディスク空き容量にアクセスする
+    -->
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>85F4.1</string>
+      </array>
+    </dict>
+
+  </array>
+
+</dict>
+</plist>

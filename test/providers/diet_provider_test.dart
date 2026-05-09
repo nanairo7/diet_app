@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:diet_app/models/daily_record.dart';
 import 'package:diet_app/providers/diet_provider.dart';
 import 'package:diet_app/services/storage_service.dart';
 // ignore: unused_import

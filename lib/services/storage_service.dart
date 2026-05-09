@@ -97,7 +97,7 @@ class StorageService {
 
   Future<void> saveNotificationSlots(List<NotificationSlot> slots) async {
     for (int i = 0; i < slots.length && i < _slotKeys.length; i++) {
-      final (prefix, _, __) = _slotKeys[i];
+      final (prefix, _, _) = _slotKeys[i];
       await _prefs.setBool('${prefix}_enabled', slots[i].enabled);
       await _prefs.setInt('${prefix}_hour', slots[i].hour);
       await _prefs.setInt('${prefix}_minute', slots[i].minute);

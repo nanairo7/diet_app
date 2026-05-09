@@ -100,7 +100,7 @@ class _ArcPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokeWidth = 14.0;
+    const strokeWidth = 14.0;
     // 丸キャップ（strokeWidth/2）が下にはみ出さないようセンターを上にずらす
     final center = Offset(size.width / 2, size.height - strokeWidth / 2);
     final radius = math.min(size.width / 2, size.height - strokeWidth / 2) - strokeWidth / 2;
